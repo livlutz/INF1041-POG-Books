@@ -1,4 +1,4 @@
-/app_completa/__pycache__/*
-/app_completa/database/*
+/app_completa/api/__pycache__/*
+/app_completa/api/database/*
 /app_completa/env/*
-/app_completa/log/*
+/app_completa/api/log/*
