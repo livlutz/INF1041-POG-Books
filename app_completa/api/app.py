@@ -27,7 +27,7 @@ def estante():
 def login():
     error = None
     if request.method == 'POST':
-        if validateLogin(request.form['username'], request.form['password']):
+        if validateLogin(request.form['email'], request.form['password']):
             return redirect('/')
         else:
             error = 'Email ou senha inválidos'
@@ -38,16 +38,24 @@ def sign_up():
     error = None
     if request.method == 'POST':
         if request.form['password'] == request.form['confirm_password']:
-            if True: # testar se email já tem no banco de dados
-                #include in database
+            session = Session()
+            new_user = Usuario(request.form['email'], request.form['password'])
+            try:
+                session.add(new_user)
+                session.commit()
                 return redirect('/login')
-            else:
-                error = 'Email já cadastrado'
+            except IntegrityError as e:
+                error = "Email já cadastrado"
         else:
             error = 'Senhas diferentes'
     return render_template('cadastro.html', error=error)
 
 
 def validateLogin(email, senha):
-    #acessa bd, acha e verifica
-    pass
+    session = Session()
+    query = session.query(Usuario).filter(Usuario.email == email)
+    result = query.first()
+    if result:
+        if result.senha == senha:
+            return True
+    return False
