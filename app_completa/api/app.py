@@ -23,7 +23,7 @@ def home():
 def estante():
     pass
 
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['POST', 'GET'])
 def login():
     error = None
     if request.method == 'POST':
@@ -33,7 +33,7 @@ def login():
             error = 'Email ou senha inválidos'
     return render_template('login.html', error=error)
 
-@app.route('/sign_up', methods=['POST'])
+@app.route('/sign_up', methods=['POST', 'GET'])
 def sign_up():
     error = None
     if request.method == 'POST':
