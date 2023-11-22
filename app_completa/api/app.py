@@ -37,17 +37,20 @@ def login():
 def sign_up():
     error = None
     if request.method == 'POST':
-        if request.form['password'] == request.form['confirm_password']:
-            session = Session()
-            new_user = Usuario(request.form['email'], request.form['password'])
-            try:
-                session.add(new_user)
-                session.commit()
-                return redirect('/login')
-            except IntegrityError as e:
-                error = "Email já cadastrado"
+        if request.form['submit'] == "Confirmar":
+            if request.form['password'] == request.form['confirm_password']:
+                session = Session()
+                new_user = Usuario(request.form['email'], request.form['password'])
+                try:
+                    session.add(new_user)
+                    session.commit()
+                    return redirect('/login')
+                except IntegrityError as e:
+                    error = "Email já cadastrado"
+            else:
+                error = 'Senhas diferentes'
         else:
-            error = 'Senhas diferentes'
+            redirect('/')
     return render_template('cadastro.html', error=error)
 
 
