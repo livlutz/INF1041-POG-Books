@@ -7,6 +7,8 @@ import os
 from model.base import Base
 from model.usuario import Usuario
 from model.tracker import Tracker
+from model.lista import Lista
+from model.livro import Livro
 
 db_path = "database/"
 # Verifica se o diretorio não existe

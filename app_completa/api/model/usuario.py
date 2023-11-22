@@ -1,4 +1,5 @@
 from sqlalchemy import Column, String
+from sqlalchemy_utils import EmailType
 
 from  model import Base
 
@@ -6,8 +7,8 @@ from  model import Base
 class Usuario(Base):
     __tablename__ = 'usuario'
 
-    email = Column("pk_usuario", String(320), primary_key=True)
-    senha = Column(String(40), not_null=True)
+    email = Column("pk_usuario", EmailType, primary_key=True)
+    senha = Column(String(50), not_null=True)
 
     def __init__(self, email: str, senha: str):
         """

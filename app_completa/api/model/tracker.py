@@ -8,7 +8,7 @@ class Tracker(Base):
     __tablename__ = 'tracker'
 
     data = Column("pk1_tracker", Date, default = date.today(), primary_key=True)
-    usuario = Column("pk2_tracker", ForeignKey("usuario.email", onupdate="CASCADE", ondelete="CASCADE"), primary_key=True)
+    usuario = Column("pk2_tracker", ForeignKey("usuario.pk_usuario", onupdate="CASCADE", ondelete="CASCADE"), primary_key=True)
     qtd = Column(Integer, nullable=False)
 
     def __init__(self, data: date, usuario: str, qtd: int):

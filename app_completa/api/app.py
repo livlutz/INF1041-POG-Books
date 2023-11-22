@@ -5,7 +5,7 @@ from flask_openapi3 import Info, Tag
 from flask_openapi3 import OpenAPI
 from flask_cors import CORS
 from flask import redirect
-from model import Session, Produto
+from model import Usuario, Tracker, Lista, Livro
 from logger import logger
 from schemas import *
 
