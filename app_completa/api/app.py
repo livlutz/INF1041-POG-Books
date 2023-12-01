@@ -1,10 +1,12 @@
 from email.mime import base
 from sqlalchemy.exc import IntegrityError
 
+from os import urandom
+
 from flask_openapi3 import Info, Tag
 from flask_openapi3 import OpenAPI
 from flask_cors import CORS
-from flask import request, redirect, render_template
+from flask import request, redirect, render_template, flash
 from model import Usuario, Tracker, Lista, Livro, Session
 from logger import logger
 from schemas import *
@@ -12,6 +14,7 @@ from schemas import *
 
 info = Info(title="Minha querida API", version="1.0.0")
 app = OpenAPI(__name__, info=info)
+app.config['SECRET_KEY'] = urandom(12)
 CORS(app)
 
 
@@ -27,18 +30,15 @@ def estante():
 def login():
     error = None
     print(request.form)
-    try:
-        if request.method == 'POST':
-            if request.form['submit'] == 'Cadastrar':
-                return redirect('/sign_up')
-            if validateLogin(request.form['username_cadastro'], request.form['senha_cadastro']):
-                return redirect('/')
-            else:
-                error = 'Email ou senha inválidos'
-        return render_template('login.html', error=error)
-    except Exception as e:
-        error_msg = "deu ruim"
-        return render_template("error.html", error_code=400, error_msg=error_msg), 400
+    if request.method == 'POST':
+        if request.form['submit'] == 'Cadastrar':
+            return redirect('/sign_up')
+        if validateLogin(request.form['username_cadastro'], request.form['senha_cadastro']):
+            return redirect('/')
+        else:
+            error = 'Email ou senha inválidos'
+            flash(error)
+    return render_template('login.html', error=error)
 
 @app.route('/sign_up', methods=['POST', 'GET'])
 def sign_up():
