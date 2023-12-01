@@ -7,7 +7,7 @@ class Lista(Base):
     __tablename__ = 'lista'
     
     email = Column("pk_email", ForeignKey("usuario.pk_usuario", onupdate="CASCADE", ondelete="CASCADE"), primary_key=True)
-    nome = Column("pk_nome", String(50), not_null=True, primary_key=True)
+    nome = Column("pk_nome", String(50), nullable=False, primary_key=True)
 
     def __init__(self, email: str, nome: str):
         """

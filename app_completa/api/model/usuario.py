@@ -8,7 +8,7 @@ class Usuario(Base):
     __tablename__ = 'usuario'
 
     email = Column("pk_usuario", EmailType, primary_key=True)
-    senha = Column(String(50), not_null=True)
+    senha = Column(String(50), nullable=False)
 
     def __init__(self, email: str, senha: str):
         """
