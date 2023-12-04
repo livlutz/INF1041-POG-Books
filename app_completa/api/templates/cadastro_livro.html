@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <title>POG Books</title>
+
+</head>
+<body style="background-color: #1f1f1f !important;">
+
+    <div class="container-fluid p-4 text-white" style="background-color: #303030"> 
+        <h2>POG Books</h2>
+    </div>
+
+    <form method="post">
+        <h2 class="mx-auto fw-bold text-white" style="width: 30rem; padding-top: 2rem; padding-left: 4rem;">Cadastro de Livro Novo</h2>
+        <div class="mx-auto" style="width: 400px; padding-top: 1rem;">
+            
+            <div class="form-floating mb-4">
+                <input type="text" style="background-image: url('https://notability.com/g/preview/2FonoRm_O7leFvQTtCY71Q/0.jpg'); background-size: 90%; background-color: #000000; color: #f8f3e0;" class="form-control" name="nome_livro" placeholder="Aventuras de John Doe" >
+                <label for="nome_livro">Nome do Livro</label>
+            </div>
+    
+            <div class="form-floating mb-4">
+                <input type="text" style="background-image: url('https://notability.com/g/preview/2FonoRm_O7leFvQTtCY71Q/0.jpg'); background-size: 90%; background-color: #3b3b3b; color: #f8f3e0;" class="form-control" name="autor_livro" placeholder="John Doe" >
+                <label for="autor_livro">Autor</label>
+            </div>
+            
+            <div class="text-white">
+                <h6>Formato assimilado:</h6>
+                <div class="form-check form-check-inline mb-4">
+                    <input class="form-check-input" type="radio" name="formato_lido" id="formato_lido_1" value="option1">
+                    <label class="form-check-label" for="formato_lido_1">Físico</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="formato_lido" id="formato_lido_2" value="option2">
+                    <label class="form-check-label" for="formato_lido_2">E-Book</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="formato_lido" id="formato_lido_3" value="option3">
+                    <label class="form-check-label" for="formato_lido_3">Áudio</label>
+                </div>
+            </div>
+            
+            <div class="text-white">
+                <h6>Recomendação:</h6>
+                <div class="form-check form-check-inline mb-4">
+                    <input class="form-check-input" type="radio" name="recomenda" id="recomenda_1" value="option1">
+                    <label class="form-check-label" for="recomenda_1">Sim</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="recomenda" id="recomenda_2" value="option2">
+                    <label class="form-check-label" for="recomenda_2">Não</label>
+                </div>
+            </div>
+
+            <div class="form-floating mb-4">
+                <input type="text" style="background-image: url('https://notability.com/g/preview/2FonoRm_O7leFvQTtCY71Q/0.jpg'); background-size: 90%; background-color: #3b3b3b; color: #f8f3e0;" class="form-control" name="por_que" placeholder="Motivo" >
+                <label for="por_que">Por que recomenda?</label>
+            </div>
+        </div>
+        
+        <div class="container text-center" style="padding-top: 2.5rem;">
+            <div class="row">
+                <div class="col">
+                </div>
+                <div class="col">
+                    <input type="submit" name="submit" value="Cancelar" style="background-color: #3b3b3b; border-color: #6479f0; color: #f8f3e0;" class="btn border-3"></input>
+                </div>
+                <div class="col">
+                </div>
+                <div class="col">
+                    <input type="submit" name="submit" value="Confirmar" style="background-color: #6479f0; color: #f8f3e0;" class="btn"></input>
+                </div>
+                <div class="col">
+                </div>
+            </div>
+        </div>  
+      </form>
+    
+</body>
+</html>
