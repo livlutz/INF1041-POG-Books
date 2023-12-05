@@ -89,7 +89,6 @@ def get_books(lista_id):
 def register_book():
     return render_template('cadastro_livro.html'), 200
 
-
 # adiciona o livro na lista
 @app.route('/<lista_id>/new_book/save', methods=['POST'])
 def save_book(lista_id):
@@ -150,5 +149,56 @@ def get_livro(lista_id, livro_id):
     else:
         return render_template('livro.html', livro = livro)
 
+# atualiza livro
+@app.route('/<lista_id>/<livro_id>/update', methods=['PUT'])
+def update_livro(livro_id):
+    session = Session()
+    # Recupere o produto existente pelo ID
+    livro = session.query(Livro).get(livro_id)
+    if livro is None:
+        return render_template("error.html", error_code=404, error_msg="Produto não encontrado :/"), 404
+    # Atualize os campos do produto com os dados fornecidos no JSON da solicitação
+    livro.nome = request.form['nome_livro']
+    livro.autor = request.form['autor_livro']
+    livro.formato_lido = request.form['formato_lido']
+    livro.recomendado = request.form['recomenda'] == 'sim'
+    livro.motivo = request.form['motivo']
+    livro.personagem_fav = request.form['personagem_fav']
+    livro.melhores_part = request.form['melhores_part']
+    livro.avaliacao1 = request.form['avaliacao1']
+    livro.avaliacao2_nome = request.form['avaliacao2_nome']
+    livro.avaliacao2 = request.form['avaliacao2']
+    livro.avaliacao3_nome = request.form['avaliacao3_nome']
+    livro.avaliacao3 = request.form['avaliacao3']
+    livro.avaliacao4_nome = request.form['avaliacao4_nome']
+    livro.avaliacao4 = request.form['avaliacao4']
+    livro.data_comeco = request.form['data_comeco']
+    livro.data_fim = request.form['data_fim']
+    livro.resumo = request.form['resumo']
+    livro.quotes = request.form['quotes']
+    livro.descricao = request.form['descricao']
+    livro.anotacao = request.form['anotacao']
+    try:
+        # Efetue a atualização do produto
+        session.commit()
+        return redirect("/<lista_id>/<livro_id>"), 200
+    except IntegrityError as e:
+        error_msg = "Erro na atualização do produto :/"
+        return render_template("error.html", error_code=409, error_msg=error_msg), 409
+    except Exception as e:
+        error_msg = "Não foi possível atualizar o produto :/"
+        print(str(e))
+        return render_template("error.html", error_code=400, error_msg=error_msg), 400
 
-    
+# deletar livro
+@app.route('/<lista_id>/<livro_id>/delete', methods=['DELETE'])
+def delete_livro(lista_id, livro_id):
+    session = Session()
+    livro = session.query(Livro).filter(Livro.lista == lista_id and Livro.id == livro_id).first()
+    count = livro.delete()
+    session.commit()
+    if count == 1:
+        return redirect('/<lista_id>'), 200
+    else: 
+        error_msg = "Produto não encontrado na base :/"
+        return render_template("error.html", error_code=404, error_msg=error_msg), 404
