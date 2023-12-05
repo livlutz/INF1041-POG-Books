@@ -43,7 +43,6 @@ def login():
 @app.route('/sign_up', methods=['POST', 'GET'])
 def sign_up():
     error = None
-    print(request.form)
     if request.method == 'POST':
         if request.form['submit'] == "Confirmar":
             if request.form['senha_cadastro'] == request.form['senha_confirma']:
@@ -58,7 +57,7 @@ def sign_up():
             else:
                 error = 'Senhas diferentes'
         else:
-            redirect('/')
+            return redirect('/')
     return render_template('cadastro.html', error=error)
 
 
@@ -70,3 +69,62 @@ def validateLogin(email, senha):
         if result.senha == senha:
             return True
     return False
+
+@app.route('/<lista_id>', methods=['GET'])
+def get_books(lista_id):
+    session = Session()
+    livros = session.query(Livro).filter(Livro.nome == lista_id)
+
+    return render_template('', livros = livros)
+
+@app.route('/<lista_id>/new_book', methods=['GET'])
+def register_book(lista_id):
+    session = Session()
+    lista = session.query(Lista).filter(Lista.nome == lista_id).first()
+    if not lista:
+        error_msg = "Lista não encontrado na base :/"
+        return render_template('error.html', error_code= 404, error_msg=error_msg), 404
+    else:
+        return render_template('cadastro_livro.html', lista=lista), 200
+
+@app.route('/<lista_id>/new_book/save', methods=['POST'])
+def save_book(lista_id):
+    session = Session()
+    lista = session.query(Lista).filter(Lista.nome == lista_id).first()
+    if not lista:
+        error_msg = "Lista não encontrado na base :/"
+        return render_template('error.html', error_code= 404, error_msg=error_msg), 404
+    else:
+        if request.form['nome_livro'] and request.form['autor_livro']:
+            livro = Livro(
+                lista.nome,
+                request.form['nome_livro'],
+                request.form['autor_livro'],
+                '',
+                request.form['formato_lido'],
+                request.form['recomenda'] == 'sim',
+                request.form['motivo'],
+                request.form['personagem_fav'],
+                request.form['melhores_part'],
+                request.form['avaliacao'],
+                request.form['experiencia'],
+                request.form['data_comeco'],
+                request.form['data_fim'],
+                request.form['descricao'],
+                request.form['anotacao']
+            )
+            try:
+                session.add(livro)
+                session.commit()
+                return redirect('/<lista_id>/<livro_id>', livro=livro), 200
+            except IntegrityError as e:
+                error_msg = "Produto de mesmo nome já salvo na base :/"
+                return render_template("error.html", error_code=409, error_msg=error_msg), 409
+            except Exception as e:
+                error_msg = "Não foi possível salvar novo item :/"
+                print(str(e))
+                return render_template("error.html", error_code=400, error_msg=error_msg), 400
+        else:
+            error = 'Nome ou autor do livro não preenchidos'
+            return redirect('/<lista_id>/new_book', error = error)
+        
