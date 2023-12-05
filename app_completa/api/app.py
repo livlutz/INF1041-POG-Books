@@ -17,15 +17,16 @@ app = OpenAPI(__name__, info=info)
 app.config['SECRET_KEY'] = urandom(12)
 CORS(app)
 
-
+# default
 @app.route('/')
 def home():
     return redirect('/openapi')
 
-@app.route('/estante')
-def estante():
-    pass
+# @app.route('/estante')
+# def estante():
+#     pass
 
+# login
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     error = None
@@ -40,6 +41,7 @@ def login():
             flash(error)
     return render_template('login.html', error=error)
 
+# cadastro
 @app.route('/sign_up', methods=['POST', 'GET'])
 def sign_up():
     error = None
@@ -60,7 +62,7 @@ def sign_up():
             return redirect('/')
     return render_template('cadastro.html', error=error)
 
-
+# valida login
 def validateLogin(email, senha):
     session = Session()
     query = session.query(Usuario).filter(Usuario.email == email)
@@ -70,23 +72,25 @@ def validateLogin(email, senha):
             return True
     return False
 
+# abre uma lista
 @app.route('/<lista_id>', methods=['GET'])
 def get_books(lista_id):
-    session = Session()
-    livros = session.query(Livro).filter(Livro.nome == lista_id)
-
-    return render_template('', livros = livros)
-
-@app.route('/<lista_id>/new_book', methods=['GET'])
-def register_book(lista_id):
     session = Session()
     lista = session.query(Lista).filter(Lista.nome == lista_id).first()
     if not lista:
         error_msg = "Lista não encontrado na base :/"
         return render_template('error.html', error_code= 404, error_msg=error_msg), 404
     else:
-        return render_template('cadastro_livro.html', lista=lista), 200
+        livros = session.query(Livro).filter(Livro.nome == lista_id)
+        return render_template('lista.html', livros = livros, lista_id = lista_id)
 
+# abre a tela de registrar livro
+@app.route('/<lista_id>/new_book', methods=['GET'])
+def register_book():
+    return render_template('cadastro_livro.html'), 200
+
+
+# adiciona o livro na lista
 @app.route('/<lista_id>/new_book/save', methods=['POST'])
 def save_book(lista_id):
     session = Session()
@@ -100,23 +104,29 @@ def save_book(lista_id):
                 lista.nome,
                 request.form['nome_livro'],
                 request.form['autor_livro'],
-                '',
                 request.form['formato_lido'],
                 request.form['recomenda'] == 'sim',
                 request.form['motivo'],
                 request.form['personagem_fav'],
                 request.form['melhores_part'],
-                request.form['avaliacao'],
-                request.form['experiencia'],
+                request.form['avaliacao1'],
+                request.form['avaliacao2_nome'],
+                request.form['avaliacao2'],
+                request.form['avaliacao3_nome'],
+                request.form['avaliacao3'],
+                request.form['avaliacao4_nome'],
+                request.form['avaliacao4'],
                 request.form['data_comeco'],
                 request.form['data_fim'],
+                request.form['resumo'],
+                request.form['quotes'],
                 request.form['descricao'],
                 request.form['anotacao']
             )
             try:
                 session.add(livro)
                 session.commit()
-                return redirect('/<lista_id>/<livro_id>', livro=livro), 200
+                return redirect('/<lista_id>', livro=livro), 200
             except IntegrityError as e:
                 error_msg = "Produto de mesmo nome já salvo na base :/"
                 return render_template("error.html", error_code=409, error_msg=error_msg), 409
@@ -128,3 +138,17 @@ def save_book(lista_id):
             error = 'Nome ou autor do livro não preenchidos'
             return redirect('/<lista_id>/new_book', error = error)
         
+# visualiza livro
+@app.route('/<lista_id>/<livro_id>', methods=['GET'])
+def get_livro(lista_id, livro_id):
+    session = Session()
+    lista = session.query(Lista).filter(Lista.nome == lista_id).first()
+    livro = session.query(Livro).filter(Livro.lista == lista_id and Livro.id == livro_id).first()
+    if not lista:
+        error_msg = "Lista não encontrado na base :/"
+        return render_template('error.html', error_code= 404, error_msg=error_msg), 404
+    else:
+        return render_template('livro.html', livro = livro)
+
+
+    
