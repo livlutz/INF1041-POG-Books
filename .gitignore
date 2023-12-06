@@ -4,3 +4,6 @@
 /app_completa/env/*
 /app_completa/.venv/*
 /app_completa/api/log/*
+.vscode/c_cpp_properties.json
+.vscode/launch.json
+.vscode/settings.json
