@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, Boolean
+from sqlalchemy import Column, String, Integer, ForeignKey, Boolean
 from datetime import datetime
 from typing import Union
 
@@ -28,8 +28,8 @@ class Livro(Base):
     avaliacao4_nome = Column(String(81))
     avaliacao4 = Column(Integer)
     
-    data_comeco = Column(DateTime)
-    data_fim = Column(DateTime)
+    data_comeco = Column(String(10))
+    data_fim = Column(String(10))
     
     resumo = Column(String(2000))
     quotes = Column(String(2000))
@@ -39,8 +39,8 @@ class Livro(Base):
     def __init__(self, lista: str, nome:str, autor:str, formato_lido:str,
                  recomendado:bool, motivo: str, personagem_fav:str, melhores_part:str,
                  avaliacao1:Integer, avaliacao2_nome: str, avaliacao2:Integer, avaliacao3_nome: str,
-                 avaliacao3:Integer, avaliacao4_nome:str, avaliacao4:Integer, data_comeco:DateTime, 
-                 data_fim:DateTime, resumo:str, quotes: str, experiencia:str, anotacao:str):
+                 avaliacao3:Integer, avaliacao4_nome:str, avaliacao4:Integer, data_comeco:str, 
+                 data_fim:str, resumo:str, quotes: str, experiencia:str, anotacao:str):
         """
         Cria um Livro
 
