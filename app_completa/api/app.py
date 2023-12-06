@@ -6,7 +6,7 @@ from os import urandom
 from flask_openapi3 import Info, Tag
 from flask_openapi3 import OpenAPI
 from flask_cors import CORS
-from flask import request, redirect, render_template, flash, session
+from flask import request, redirect, render_template, flash, session, url_for
 from model import Usuario, Tracker, Lista, Livro, Session
 from logger import logger
 from schemas import *
@@ -127,60 +127,57 @@ def get_books(lista_id):
         return render_template('lista.html', livros = livros, lista_id = lista_id)
 
 # abre a tela de registrar livro
-@app.route('/listas/<lista_id>/new_book', methods=['GET'])
+@app.route('/listas/<lista_id>/new_book', methods=['GET', 'POST'])
 @login_required
-def register_book():
-    return render_template('cadastro_livro.html'), 200
-
-# adiciona o livro na lista
-@app.route('/listas/<lista_id>/new_book/save', methods=['POST'])
-@login_required
-def save_book(lista_id):
-    sessionBD = Session()
-    user = sessionBD.query(Usuario).filter(Usuario.email == session['email']).first()
-    lista = sessionBD.query(Lista).filter(Lista.nome == lista_id and Lista.email == user.email).first()
-    if not lista:
-        error_msg = "Lista não encontrado na base :/"
-        return render_template('error.html', error_code= 404, error_msg=error_msg), 404
-    else:
-        if request.form['nome_livro'] and request.form['autor_livro']:
-            livro = Livro(
-                lista.nome,
-                request.form['nome_livro'],
-                request.form['autor_livro'],
-                request.form['formato_lido'],
-                request.form['recomenda'] == 'sim',
-                request.form['motivo'],
-                request.form['personagem_fav'],
-                request.form['melhores_part'],
-                request.form['avaliacao1'],
-                request.form['avaliacao2_nome'],
-                request.form['avaliacao2'],
-                request.form['avaliacao3_nome'],
-                request.form['avaliacao3'],
-                request.form['avaliacao4_nome'],
-                request.form['avaliacao4'],
-                request.form['data_comeco'],
-                request.form['data_fim'],
-                request.form['resumo'],
-                request.form['quotes'],
-                request.form['descricao'],
-                request.form['anotacao']
-            )
-            try:
-                sessionBD.add(livro)
-                sessionBD.commit()
-                return redirect('/<lista_id>', livro=livro), 200
-            except IntegrityError as e:
-                error_msg = "Produto de mesmo nome já salvo na base :/"
-                return render_template("error.html", error_code=409, error_msg=error_msg), 409
-            except Exception as e:
-                error_msg = "Não foi possível salvar novo item :/"
-                print(str(e))
-                return render_template("error.html", error_code=400, error_msg=error_msg), 400
+def register_book(lista_id):
+    if request.method == 'POST':
+        sessionBD = Session()
+        user = sessionBD.query(Usuario).filter(Usuario.email == session['email']).first()
+        lista = sessionBD.query(Lista).filter(Lista.nome == lista_id and Lista.email == user.email).first()
+        if not lista:
+            error_msg = "Lista não encontrado na base :/"
+            return render_template('error.html', error_code= 404, error_msg=error_msg), 404
         else:
-            error = 'Nome ou autor do livro não preenchidos'
-            return redirect('/<lista_id>/new_book', error = error)
+            if request.form['nome_livro'] and request.form['autor_livro']:
+                livro = Livro(
+                    lista.nome,
+                    request.form['nome_livro'],
+                    request.form['autor_livro'],
+                    request.form['formato_lido'],
+                    request.form['recomenda'] == 'sim',
+                    request.form['motivo'],
+                    request.form['personagem_fav'],
+                    request.form['melhores_part'],
+                    request.form['avaliacao1'],
+                    request.form['avaliacao2_nome'],
+                    request.form['avaliacao2'],
+                    request.form['avaliacao3_nome'],
+                    request.form['avaliacao3'],
+                    request.form['avaliacao4_nome'],
+                    request.form['avaliacao4'],
+                    request.form['data_comeco'],
+                    request.form['data_fim'],
+                    request.form['resumo'],
+                    request.form['quotes'],
+                    request.form['descricao'],
+                    request.form['anotacao']
+                )
+                try:
+                    sessionBD.add(livro)
+                    sessionBD.commit()
+                    return redirect('/<lista_id>', livro=livro), 200
+                except IntegrityError as e:
+                    error_msg = "Produto de mesmo nome já salvo na base :/"
+                    return render_template("error.html", error_code=409, error_msg=error_msg), 409
+                except Exception as e:
+                    error_msg = "Não foi possível salvar novo item :/"
+                    print(str(e))
+                    return render_template("error.html", error_code=400, error_msg=error_msg), 400
+            else:
+                error = 'Nome ou autor do livro não preenchidos'
+                return redirect(url_for('/<lista_id>/new_book'), error = error)
+    return render_template('cadastro_livro.html', lista_id = lista_id), 200
+
         
 # visualiza livro
 @app.route('/listas/<lista_id>/<livro_id>', methods=['GET'])
