@@ -79,8 +79,14 @@ def sign_up():
             return redirect('/')
     return render_template('cadastro.html', error=error)
 
+# perfil
+@app.route('/profile', methods=['GET'])
+@login_required
+def profile():
+    return render_template('config_conta.html')
+
 # deslogar
-@app.route('/logout/')
+@app.route('/logout')
 @login_required
 def logout():
     session.pop('logged_in', None)

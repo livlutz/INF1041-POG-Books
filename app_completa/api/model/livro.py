@@ -9,9 +9,8 @@ class Livro(Base):
     __tablename__ = 'livro'
     
     lista = Column("pk_lista", ForeignKey("lista.pk_nome", onupdate="CASCADE", ondelete="CASCADE"), primary_key=True)
-    id = Column("pk_livro", Integer, primary_key=True)
+    nome = Column("pk_livro", String(140), primary_key=True)
     
-    nome = Column(String(140), nullable=False)
     autor = Column(String(101), nullable=False)
     
     formato_lido = Column(String(21))
