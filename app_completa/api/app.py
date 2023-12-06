@@ -21,7 +21,7 @@ CORS(app)
 # default
 @app.route('/')
 def home():
-    return redirect('/home')
+    return redirect('/login')
 
 # wrapper de verificar login
 def login_required(f):
@@ -50,7 +50,7 @@ def login():
             session['logged_in'] = True
             if 'email' not in session:
                 session['email'] = request.form['username_cadastro']
-            return redirect('/')
+            return redirect('/profile')
         else:
             error = 'Email ou senha inválidos'
             flash(error)
@@ -86,7 +86,7 @@ def profile():
     return render_template('config_conta.html')
 
 # deslogar
-@app.route('/logout')
+@app.route('/logout', methods=['GET'])
 @login_required
 def logout():
     session.pop('logged_in', None)
