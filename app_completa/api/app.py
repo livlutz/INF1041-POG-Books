@@ -49,8 +49,7 @@ def login():
         if validateLogin(request.form['username_cadastro'], request.form['senha_cadastro']):
             session['logged_in'] = True
             if 'email' not in session:
-                session['email'] = []
-            session['email'].append(request.form['username_cadastro'])
+                session['email'] = request.form['username_cadastro']
             return redirect('/')
         else:
             error = 'Email ou senha inválidos'
@@ -96,8 +95,16 @@ def validateLogin(email, senha):
             return True
     return False
 
+@app.route('/listas', methods=['GET'])
+@login_required
+def get_lists():
+    sessionBD = Session()
+    user = sessionBD.query(Usuario).filter(Usuario.email == session['email']).first()
+    listas = sessionBD.query(Lista).filter(Lista.nome == lista_id and Lista.email == user.email)
+    return render_template('listas.html', listas = listas)
+
 # abre uma lista
-@app.route('/<lista_id>', methods=['GET'])
+@app.route('/listas/<lista_id>', methods=['GET'])
 @login_required
 def get_books(lista_id):
     sessionBD = Session()
@@ -111,13 +118,13 @@ def get_books(lista_id):
         return render_template('lista.html', livros = livros, lista_id = lista_id)
 
 # abre a tela de registrar livro
-@app.route('/<lista_id>/new_book', methods=['GET'])
+@app.route('/listas/<lista_id>/new_book', methods=['GET'])
 @login_required
 def register_book():
     return render_template('cadastro_livro.html'), 200
 
 # adiciona o livro na lista
-@app.route('/<lista_id>/new_book/save', methods=['POST'])
+@app.route('/listas/<lista_id>/new_book/save', methods=['POST'])
 @login_required
 def save_book(lista_id):
     sessionBD = Session()
@@ -167,7 +174,7 @@ def save_book(lista_id):
             return redirect('/<lista_id>/new_book', error = error)
         
 # visualiza livro
-@app.route('/<lista_id>/<livro_id>', methods=['GET'])
+@app.route('/listas/<lista_id>/<livro_id>', methods=['GET'])
 @login_required
 def get_livro(lista_id, livro_id):
     sessionBD = Session()
@@ -181,7 +188,7 @@ def get_livro(lista_id, livro_id):
         return render_template('livro.html', livro = livro)
 
 # atualiza livro
-@app.route('/<lista_id>/<livro_id>/update', methods=['PUT'])
+@app.route('/listas/<lista_id>/<livro_id>/update', methods=['PUT'])
 @login_required
 def update_livro(lista_id, livro_id):
     sessionBD = Session()
@@ -225,7 +232,7 @@ def update_livro(lista_id, livro_id):
         return render_template("error.html", error_code=400, error_msg=error_msg), 400
 
 # deletar livro
-@app.route('/<lista_id>/<livro_id>/delete', methods=['DELETE'])
+@app.route('/listas/<lista_id>/<livro_id>/delete', methods=['DELETE'])
 @login_required
 def delete_livro(lista_id, livro_id):
     sessionBD = Session()
