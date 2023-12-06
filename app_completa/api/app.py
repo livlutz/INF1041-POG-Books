@@ -65,8 +65,10 @@ def sign_up():
             if request.form['senha_cadastro'] == request.form['senha_confirma']:
                 session = Session()
                 new_user = Usuario(request.form['username_cadastro'], request.form['senha_cadastro'])
+                default_list = Lista(request.form['username_cadastro'], 'default')
                 try:
                     session.add(new_user)
+                    session.add(default_list)
                     session.commit()
                     return redirect('/login')
                 except IntegrityError as e:
