@@ -13,13 +13,13 @@
 <body class="text-white" style="background-color: #1f1f1f !important; ">
 
   <div class="container-fluid p-4" style="background-color: #3b3b3b"> 
-    <button type="button" class="btn fs-2 fw-bold text-white btn-lg">POG Books</button>
+    <a href="/listas"><button type="button" class="btn fs-2 fw-bold text-white btn-lg">POG Books</button></a>
   </div>
       
   
 
     <ul id="livros; lista_id">
-        <button href="/listas/{{ lista_id }}/new_book" type="button" class="btn fs-2 fw-bold text-white btn-lg">Cadastrar Livro +</button>
+        <a href="/listas/{{ lista_id }}/new_book"><button type="button" class="btn fs-2 fw-bold text-white btn-lg">Cadastrar Livro +</button></a>
         {% for livro in livros %}
             <li><a href="/listas/{{ lista_id }}/{{ livro.nome }}">{{ livro.nome }}</a></li>
         {% endfor %}
