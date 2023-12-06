@@ -95,12 +95,13 @@ def validateLogin(email, senha):
             return True
     return False
 
+# mostra as listas
 @app.route('/listas', methods=['GET'])
 @login_required
 def get_lists():
     sessionBD = Session()
     user = sessionBD.query(Usuario).filter(Usuario.email == session['email']).first()
-    listas = sessionBD.query(Lista).filter(Lista.nome == lista_id and Lista.email == user.email)
+    listas = sessionBD.query(Lista).filter(Lista.email == user.email)
     return render_template('listas.html', listas = listas)
 
 # abre uma lista
