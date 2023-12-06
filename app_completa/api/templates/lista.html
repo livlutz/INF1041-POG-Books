@@ -16,9 +16,10 @@
     <button type="button" class="btn fs-2 fw-bold text-white btn-lg">POG Books</button>
   </div>
       
-  <button href="/cadastro_livro.html" type="button" class="btn fs-2 fw-bold text-white btn-lg">Cadastrar Livro +</button>
+  
 
     <ul id="livros; lista_id">
+        <button href="/listas/{{ lista_id }}/new_book" type="button" class="btn fs-2 fw-bold text-white btn-lg">Cadastrar Livro +</button>
         {% for livro in livros %}
             <li><a href="/listas/{{ lista_id }}/{{ livro.nome }}">{{ livro.nome }}</a></li>
         {% endfor %}
