@@ -119,6 +119,8 @@ def get_books(lista_id):
     sessionBD = Session()
     user = sessionBD.query(Usuario).filter(Usuario.email == session['email']).first()
     lista = sessionBD.query(Lista).filter(Lista.nome == lista_id and Lista.email == user.email).first()
+    print(lista)
+    print(lista_id)
     if not lista:
         error_msg = "Lista não encontrado na base :/"
         return render_template('error.html', error_code= 404, error_msg=error_msg), 404
@@ -138,7 +140,6 @@ def register_book(lista_id):
             error_msg = "Lista não encontrado na base :/"
             return render_template('error.html', error_code= 404, error_msg=error_msg), 404
         else:
-            print(request.form)
             if request.form['nome_livro'] and request.form['autor_livro']:
                 livro = Livro(
                     lista.nome,
@@ -166,7 +167,8 @@ def register_book(lista_id):
                 try:
                     sessionBD.add(livro)
                     sessionBD.commit()
-                    return redirect('listas/<lista_id>', livro=livro), 200
+                    id = lista_id
+                    return redirect('/listas/%s'%id), 200
                 except IntegrityError as e:
                     error_msg = "Produto de mesmo nome já salvo na base :/"
                     print(e)
