@@ -42,7 +42,6 @@ def login_required(f):
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     error = None
-    print(request.form)
     if request.method == 'POST':
         if request.form['submit'] == 'Cadastrar':
             return redirect('/sign_up')
@@ -118,9 +117,7 @@ def get_lists():
 def get_books(lista_id):
     sessionBD = Session()
     user = sessionBD.query(Usuario).filter(Usuario.email == session['email']).first()
-    lista = sessionBD.query(Lista).filter(Lista.nome == lista_id and Lista.email == user.email).first()
-    print(lista)
-    print(lista_id)
+    lista = sessionBD.query(Lista).filter(Lista.nome == lista_id, Lista.email == user.email).first()
     if not lista:
         error_msg = "Lista não encontrado na base :/"
         return render_template('error.html', error_code= 404, error_msg=error_msg), 404
@@ -135,7 +132,7 @@ def register_book(lista_id):
     if request.method == 'POST':
         sessionBD = Session()
         user = sessionBD.query(Usuario).filter(Usuario.email == session['email']).first()
-        lista = sessionBD.query(Lista).filter(Lista.nome == lista_id and Lista.email == user.email).first()
+        lista = sessionBD.query(Lista).filter(Lista.nome == lista_id, Lista.email == user.email).first()
         if not lista:
             error_msg = "Lista não encontrado na base :/"
             return render_template('error.html', error_code= 404, error_msg=error_msg), 404
@@ -188,9 +185,15 @@ def register_book(lista_id):
 @login_required
 def get_livro(lista_id, livro_id):
     sessionBD = Session()
+    #print(livro_id)
     user = sessionBD.query(Usuario).filter(Usuario.email == session['email']).first()
-    lista = sessionBD.query(Lista).filter(Lista.nome == lista_id and Lista.email == user.email).first()
-    livro = sessionBD.query(Livro).filter(Livro.lista == lista.nome and Livro.id == livro_id).first()
+    lista = sessionBD.query(Lista).filter(Lista.nome == lista_id, Lista.email == user.email).first()
+    livro = sessionBD.query(Livro).filter(Livro.lista == lista.nome, Livro.nome == livro_id).first()
+    # print(sessionBD.query(Livro).filter(Livro.lista == lista.nome, Livro.nome == livro_id))
+    # print(livro.nome)
+    # print(livro_id)
+    # print(livro.nome == livro_id)   
+
     if not lista:
         error_msg = "Lista não encontrado na base :/"
         return render_template('error.html', error_code= 404, error_msg=error_msg), 404
@@ -204,8 +207,8 @@ def update_livro(lista_id, livro_id):
     sessionBD = Session()
     # Recupere o produto existente pelo ID
     user = sessionBD.query(Usuario).filter(Usuario.email == session['email']).first()
-    lista = sessionBD.query(Lista).filter(Lista.nome == lista_id and Lista.email == user.email).first()
-    livro = sessionBD.query(Livro).filter(Livro.id == livro_id and Livro.lista == lista.nome).first()
+    lista = sessionBD.query(Lista).filter(Lista.nome == lista_id, Lista.email == user.email).first()
+    livro = sessionBD.query(Livro).filter(Livro.id == livro_id, Livro.lista == lista.nome).first()
     if livro is None:
         return render_template("error.html", error_code=404, error_msg="Produto não encontrado :/"), 404
     # Atualize os campos do produto com os dados fornecidos no JSON da solicitação
@@ -247,8 +250,8 @@ def update_livro(lista_id, livro_id):
 def delete_livro(lista_id, livro_id):
     sessionBD = Session()
     user = sessionBD.query(Usuario).filter(Usuario.email == session['email']).first()
-    lista = sessionBD.query(Lista).filter(Lista.nome == lista_id and Lista.email == user.email).first()
-    livro = sessionBD.query(Livro).filter(Livro.lista == lista.nome and Livro.id == livro_id).first()
+    lista = sessionBD.query(Lista).filter(Lista.nome == lista_id, Lista.email == user.email).first()
+    livro = sessionBD.query(Livro).filter(Livro.lista == lista.nome, Livro.id == livro_id).first()
     count = livro.delete()
     sessionBD.commit()
     if count == 1:
